@@ -9,6 +9,7 @@ import { MusicEngine } from "./music-engine.js";
 import { VisualEngine } from "./visual-engine.js";
 import { saveCard } from "./card-storage.js";
 import { compileMindTarget } from "./ar-engine.js";
+import * as Tone from "https://esm.sh/tone@15";
 
 const $ = (id) => document.getElementById(id);
 
@@ -130,6 +131,8 @@ generateBtn.addEventListener("click", async () => {
 
 playMusicBtn.addEventListener("click", async () => {
   if (!lastGenerated) return;
+  // iOS Safari: AudioContext는 제스처 핸들러 최초 진입 시 즉시 언락해야 함
+  await Tone.start();
   if (musicEngine) await musicEngine.stop();
   musicEngine = new MusicEngine(lastGenerated.params.music);
   playMusicBtn.disabled = true;

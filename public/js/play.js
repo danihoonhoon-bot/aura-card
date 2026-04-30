@@ -7,6 +7,7 @@ import { loadCard, blobToImage } from "./card-storage.js";
 import { MusicEngine } from "./music-engine.js";
 import { VisualEngine } from "./visual-engine.js";
 import { AREngine } from "./ar-engine.js";
+import * as Tone from "https://esm.sh/tone@15";
 
 const $ = (id) => document.getElementById(id);
 
@@ -61,6 +62,8 @@ async function init() {
 
 playBtn.addEventListener("click", async () => {
   if (!card) return;
+  // iOS Safari: AudioContext 언락은 제스처 핸들러 진입 직후 즉시
+  await Tone.start();
   playBtn.disabled = true;
   setStatus("🎵 시작 중…");
   try {
@@ -94,6 +97,8 @@ stopBtn.addEventListener("click", async () => {
 
 arBtn.addEventListener("click", async () => {
   if (!card?.mindBuffer) return;
+  // iOS Safari: AR 시작 시 음악도 자동 재생되므로 여기서도 언락
+  await Tone.start();
   arBtn.disabled = true;
   setStatus("📷 카메라 준비 중…");
   arContainer.classList.add("active");

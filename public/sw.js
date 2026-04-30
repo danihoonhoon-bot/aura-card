@@ -1,14 +1,15 @@
 /**
  * Service Worker — 정적 자산 캐싱.
- * 캐시 이름은 배포할 때마다 자동 갱신을 위해 버전 포함.
+ * 버전 올리면 기존 캐시 자동 삭제.
+ *
+ * Safari 주의: navigate 모드(HTML 페이지) 요청은 SW를 바이패스.
+ * SW가 리다이렉트 응답을 돌려주면 Safari가 즉시 오류를 던지므로
+ * HTML 네비게이션은 항상 네트워크로 직접 보낸다.
  */
 
-const CACHE = "aura-v0.1.0";
+const CACHE = "aura-v0.1.1";
+// HTML 파일은 캐시 대상에서 제외 — navigate 요청은 SW를 통하지 않으므로 의미 없음
 const ASSETS = [
-  "./",
-  "./index.html",
-  "./generate.html",
-  "./play.html",
   "./manifest.json",
   "./css/style.css",
   "./js/feature-extractor.js",
@@ -40,10 +41,24 @@ self.addEventListener("activate", (e) => {
 
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
-  // CDN 자산은 항상 네트워크 (Tone.js, Three.js)
+
+  // 다른 오리진(CDN) — 완전 바이패스
   if (url.origin !== location.origin) return;
-  // 같은 출처 자산: cache-first, 실패 시 네트워크
+  // GET 아닌 요청 — 바이패스
+  if (e.request.method !== "GET") return;
+  // HTML 네비게이션 — Safari 리다이렉션 오류 방지, 항상 네트워크로
+  if (e.request.mode === "navigate") return;
+
+  // JS/CSS/이미지: cache-first, 없으면 네트워크
   e.respondWith(
-    caches.match(e.request).then((hit) => hit || fetch(e.request))
+    caches.match(e.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(e.request).catch(() =>
+        new Response("오프라인 — 네트워크를 확인해주세요", {
+          status: 503,
+          headers: { "Content-Type": "text/plain; charset=utf-8" },
+        })
+      );
+    })
   );
 });
