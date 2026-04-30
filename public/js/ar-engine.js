@@ -9,7 +9,9 @@
  */
 
 import * as THREE from "three";
-import { MindARThree } from "https://esm.sh/mind-ar@1.2.5/dist/mindar-image-three.prod.js";
+// ?deps=three@0.155.0 : esm.sh 가 MindAR 내부의 bare 'three' import 를
+// 0.155.0 으로 고정 → importmap 과 동일 인스턴스, sRGBEncoding 삭제 버전 회피
+import { MindARThree } from "https://esm.sh/mind-ar@1.2.5/dist/mindar-image-three.prod.js?deps=three@0.155.0";
 
 export class AREngine {
   /**
