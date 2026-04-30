@@ -41,8 +41,11 @@
         <div class="icon">📷</div>
         <div><b>사진을 드롭하거나 탭하세요</b></div>
         <div class="hint">JPG · PNG · HEIC (Safari) · 가로세로 무관</div>
-        <input type="file" id="file-input" accept="image/*" hidden />
       </div>
+      <!-- drop-zone 밖에 위치: innerHTML 교체 시 사라지지 않음.
+           display:none 대신 시각적 숨김 — iOS Safari는 display:none 요소에 .click() 무시 -->
+      <input type="file" id="file-input" accept="image/*"
+        style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0,0,0,0);" />
 
       <label class="field" for="name-input">② 이름 (선택)</label>
       <input id="name-input" type="text" placeholder="예: 지훈" maxlength="32" />
