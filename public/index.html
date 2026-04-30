@@ -14,11 +14,19 @@
   <title>Aura · 당신만의 음악·시각 명함</title>
   <meta name="description" content="사진 한 장이 당신만의 음악·3D·디지털 명함이 됩니다." />
   <script>
-    // Cloudflare 가 공유 링크를 index.html 로 라우팅할 경우 play.html 로 즉시 전달
+    // Cloudflare 가 공유 링크를 index.html 로 라우팅할 경우 play 페이지로 즉시 전달.
+    // play/generate 경로에 이미 있으면 루프 방지를 위해 실행 안 함.
     (function () {
+      const path = location.pathname;
+      const alreadyOnPlay = /\/(play|generate)(\.html)?(\?|$)/.test(path);
+      if (alreadyOnPlay) return;
+
       const p = new URLSearchParams(location.search);
       if (p.has("data") || p.has("id")) {
-        location.replace("./play.html" + location.search + location.hash);
+        // pathname 스타일(clean URL vs .html) 에 맞춰 target 결정
+        const hasExt = path.endsWith(".html") || path === "/";
+        const target = hasExt ? "./play.html" : "./play";
+        location.replace(target + location.search + location.hash);
       }
     })();
   </script>
