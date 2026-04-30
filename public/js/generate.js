@@ -194,7 +194,16 @@ saveBtn.addEventListener("click", async () => {
       mindBuffer: mindBuffer ? new Blob([mindBuffer]) : null,
     };
     const id = await saveCard(card);
-    const url = `${location.origin}${location.pathname.replace(/generate\.html$/, "play.html")}?id=${id}`;
+
+    // #data= 해시에 직렬화 — 다른 기기에서도 음악·3D 재생 가능
+    // IndexedDB(AR)는 이 기기에서만, 해시 데이터는 어디서나 동작
+    const sharePayload = encodeURIComponent(JSON.stringify({
+      name: lastGenerated.name,
+      features: lastGenerated.features,
+      params: lastGenerated.params,
+    }));
+    const base = `${location.origin}${location.pathname.replace(/generate\.html$/, "play.html")}`;
+    const url = `${base}?id=${id}#data=${sharePayload}`;
     shareUrlDisplay.value = url;
     shareLink.href = url;
     shareLink.classList.remove("hidden");
