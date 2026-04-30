@@ -23,3 +23,9 @@ node_modules/
 # Build artifacts (현재 빌드 없음)
 dist/
 build/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example

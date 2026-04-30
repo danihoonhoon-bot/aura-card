@@ -5,8 +5,20 @@
   "description": "Aura — 사진 한 장에서 당신만의 음악·3D를 만드는 PWA.",
   "scripts": {
     "dev": "npx --yes serve public -l 8000",
-    "build": "echo 'No build step. Static files only.'"
+    "build": "echo 'No build step. Static files only.'",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
-  "keywords": ["pwa", "tone.js", "three.js", "ar", "music", "generative"],
-  "license": "MIT"
+  "keywords": [
+    "pwa",
+    "tone.js",
+    "three.js",
+    "ar",
+    "music",
+    "generative"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^4.86.0"
+  }
 }
