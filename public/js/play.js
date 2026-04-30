@@ -78,10 +78,7 @@ async function init() {
   });
   visualEngine.start();
 
-  // AR 버튼 — mindBuffer 있을 때만 표시 (같은 기기 + AR 컴파일 완료)
-  if (card.mindBuffer) {
-    arBtn.classList.remove("hidden");
-  }
+  // AR 버튼은 항상 표시 — mindBuffer 없을 때 클릭 시 안내 메시지 처리
 
   setStatus("▶ '아우라 듣기'를 눌러 음악을 시작하세요");
 }
@@ -156,7 +153,10 @@ stopBtn.addEventListener("click", async () => {
 // ─────────────── AR 모드 ───────────────
 
 arBtn.addEventListener("click", async () => {
-  if (!card?.mindBuffer) return;
+  if (!card?.mindBuffer) {
+    setStatus("📷 AR은 카드를 만든 기기에서 열어야 사용할 수 있어요. 공유 링크 수신자는 음악·3D만 감상 가능합니다.", "error");
+    return;
+  }
   arBtn.disabled = true;
   setStatus("📷 카메라 준비 중…");
   arContainer.classList.add("active");

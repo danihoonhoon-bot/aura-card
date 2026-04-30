@@ -98,9 +98,13 @@
           <button id="play-btn">🎵 아우라 듣기</button>
           <button id="stop-btn" class="hidden warn">⏹ 정지</button>
         </div>
-        <div class="row">
-          <button id="ar-btn" class="ghost hidden">📷 AR 모드로 보기</button>
-        </div>
+
+        <!-- AR 버튼 — 항상 표시, 풀 너비 -->
+        <button id="ar-btn"
+          style="width:100%; margin-top:14px; font-size:17px; padding:17px 22px; letter-spacing:0.03em;">
+          📷 AR 카메라 켜기
+        </button>
+
         <div class="status" id="status">불러오는 중…</div>
       </div>
     </div>

@@ -33,15 +33,18 @@ export class MusicEngine {
 
     const p = this.params;
 
-    // 잔향 + 핑퐁 딜레이
-    const reverb = new Tone.Reverb({ decay: 6, wet: p.reverb }).toDestination();
+    // Limiter: reverb + pad 합산 시 클리핑 방지 (-3 dBFS 천장)
+    const limiter = new Tone.Limiter(-3).toDestination();
+
+    // 잔향 + 핑퐁 딜레이 → Limiter
+    const reverb = new Tone.Reverb({ decay: 6, wet: p.reverb }).connect(limiter);
     const delay = new Tone.FeedbackDelay({
       delayTime: 60 / p.tempo,
       feedback: 0.35,
       wet: 0.25,
     }).connect(reverb);
 
-    // reverb 출력을 분기해 analyser 에 연결 (스피커 출력과 병렬)
+    // reverb 출력을 analyser 에도 분기 (Limiter 전 신호, 비트 감지용)
     this._analyser = new Tone.Analyser("waveform", 64);
     reverb.connect(this._analyser);
 
@@ -56,7 +59,7 @@ export class MusicEngine {
     }).connect(reverb);
     pad.volume.value = -16;
 
-    this._nodes.push(reverb, delay, synth, pad, this._analyser);
+    this._nodes.push(limiter, reverb, delay, synth, pad, this._analyser);
 
     // 키 → root 주파수
     const rootMidi = 48 + p.keyIndex; // C3 부근
@@ -90,9 +93,9 @@ export class MusicEngine {
     Tone.Transport.bpm.value = p.tempo;
     Tone.Transport.start();
 
-    // 부드러운 페이드 인
+    // 부드러운 페이드 인 — -4 dB 로 Limiter 전 헤드룸 확보
     Tone.Destination.volume.value = -60;
-    Tone.Destination.volume.rampTo(0, 2);
+    Tone.Destination.volume.rampTo(-4, 2);
   }
 
   _makeSynth(name) {
