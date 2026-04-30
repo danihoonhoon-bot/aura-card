@@ -28,6 +28,13 @@ export class AREngine {
     this.started = false;
     this.onTargetFound = null;
     this.onTargetLost = null;
+    this._musicEngine = null;
+    this._levelSmooth = 0; // 비트 레벨 EMA (지터 방지)
+  }
+
+  // 음악 엔진을 나중에 주입 — AR 시작 후 음악이 시작될 수 있으므로 setter 사용
+  setMusicEngine(engine) {
+    this._musicEngine = engine;
   }
 
   async start() {
@@ -74,12 +81,27 @@ export class AREngine {
     await this.mindar.start();
     this.started = true;
 
-    // 회전 애니메이션
+    // 회전 + 비트 반응 애니메이션
     const speed = this.params.rotationSpeed || 0.3;
+    const basePalette = this.params.palette || ["#7c4dff", "#3b82f6", "#ff6b9d"];
+    const colorA = new THREE.Color(basePalette[2] || basePalette[0]);
+    const colorB = new THREE.Color(basePalette[0]);
     renderer.setAnimationLoop(() => {
       const t = performance.now() / 1000;
       mesh.rotation.x = t * speed * 0.6;
       mesh.rotation.y = t * speed;
+
+      // 비트 레벨 EMA — 음악 엔진 연결 전/후 모두 안전
+      const raw = this._musicEngine ? this._musicEngine.getLevel() : 0;
+      this._levelSmooth = this._levelSmooth * 0.75 + raw * 0.25;
+      const lvl = this._levelSmooth;
+
+      // 스케일 펄스 (1.0 ~ 1.45)
+      mesh.scale.setScalar(1.0 + lvl * 0.45);
+
+      // 색상: 조용하면 palette[2], 강하면 palette[0] 사이 보간
+      mesh.material.color.lerpColors(colorA, colorB, lvl);
+
       renderer.render(scene, camera);
     });
   }

@@ -17,6 +17,15 @@ export class MusicEngine {
     this._nodes = [];
   }
 
+  // 현재 RMS 레벨 0–1 반환 — AR 비트 반응 애니메이션용
+  getLevel() {
+    if (!this._analyser || !this.started) return 0;
+    const buf = this._analyser.getValue();
+    let sum = 0;
+    for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+    return Math.min(1, Math.sqrt(sum / buf.length) * 4);
+  }
+
   async start() {
     if (this.started) return;
     await Tone.start();
@@ -32,6 +41,10 @@ export class MusicEngine {
       wet: 0.25,
     }).connect(reverb);
 
+    // reverb 출력을 분기해 analyser 에 연결 (스피커 출력과 병렬)
+    this._analyser = new Tone.Analyser("waveform", 64);
+    reverb.connect(this._analyser);
+
     // 메인 신스 (악기 프리셋에 따라 다름)
     const synth = this._makeSynth(p.instrument).connect(delay);
     synth.volume.value = -8;
@@ -43,7 +56,7 @@ export class MusicEngine {
     }).connect(reverb);
     pad.volume.value = -16;
 
-    this._nodes.push(reverb, delay, synth, pad);
+    this._nodes.push(reverb, delay, synth, pad, this._analyser);
 
     // 키 → root 주파수
     const rootMidi = 48 + p.keyIndex; // C3 부근
@@ -107,6 +120,7 @@ export class MusicEngine {
       try { n.dispose(); } catch {}
     }
     this._nodes = [];
+    this._analyser = null;
     this.started = false;
   }
 }

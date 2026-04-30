@@ -118,6 +118,8 @@ arBtn.addEventListener("click", async () => {
       playBtn.classList.add("hidden");
       stopBtn.classList.remove("hidden");
     }
+    // 음악 엔진 주입 — 비트 반응 3D 활성화
+    arEngine.setMusicEngine(musicEngine);
     setStatus("📷 AR 모드");
   } catch (e) {
     console.error(e);
