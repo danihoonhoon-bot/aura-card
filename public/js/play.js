@@ -34,6 +34,12 @@ let arEngine     = null;
 // ─────────────── 초기화 ───────────────
 
 async function init() {
+  // 인앱 브라우저 감지 — 카메라·오디오 권한 제한 경고
+  if (isInAppBrowser()) {
+    const overlay = document.getElementById("inapp-overlay");
+    if (overlay) overlay.style.display = "flex";
+  }
+
   setStatus("카드 불러오는 중…");
 
   // 1) IndexedDB — 같은 기기에서 생성한 카드 (AR 지원)
@@ -42,9 +48,9 @@ async function init() {
     card = await loadCard(id).catch(() => null);
   }
 
-  // 2) URL 해시 — 공유 링크 (#data=JSON, 음악·3D만)
+  // 2) URL 데이터 — 공유 링크 (?data= 또는 #data=, 음악·3D만)
   if (!card) {
-    card = loadFromHash();
+    card = loadFromUrl();
   }
 
   if (!card) {
@@ -81,21 +87,31 @@ async function init() {
 }
 
 /**
- * URL 해시에서 카드 데이터 복원.
- * generate.js 가 #data=encodeURIComponent(JSON) 형태로 삽입함.
+ * URL 쿼리스트링(?data=) 또는 해시(#data=)에서 카드 데이터 복원.
+ * 인앱 브라우저는 # 해시를 제거하므로 ?data= 를 우선 확인.
  */
-function loadFromHash() {
+function loadFromUrl() {
+  // 1) 쿼리스트링 우선 — 인앱 브라우저 안전
+  const qData = new URLSearchParams(location.search).get("data");
+  if (qData) return parsePayload(qData);
+
+  // 2) 해시 폴백 — 구버전 공유 링크 호환
   const hash = location.hash;
-  if (!hash.startsWith("#data=")) return null;
+  if (hash.startsWith("#data=")) return parsePayload(hash.slice(6));
+
+  return null;
+}
+
+function parsePayload(encoded) {
   try {
-    const payload = JSON.parse(decodeURIComponent(hash.slice(6)));
+    const payload = JSON.parse(decodeURIComponent(encoded));
     if (!payload.features || !payload.params) return null;
     return {
       name:          payload.name || "Aura",
       features:      payload.features,
       params:        payload.params,
-      cardImageBlob: null,   // URL 공유 카드는 이미지 없음
-      mindBuffer:    null,   // AR 불가
+      cardImageBlob: null,
+      mindBuffer:    null,
     };
   } catch {
     return null;
@@ -189,6 +205,15 @@ window.addEventListener("beforeunload", () => {
 });
 
 // ─────────────── helpers ───────────────
+
+function isInAppBrowser() {
+  const ua = navigator.userAgent;
+  // 명시적 인앱 브라우저 UA
+  if (/KAKAOTALK|NAVER|Instagram|FBAN|FB_IAB|Line\/|MicroMessenger|Snapchat/i.test(ua)) return true;
+  // iOS 인앱 공통: AppleWebKit 있지만 Safari/ 없음
+  if (/iPhone|iPad/.test(ua) && !/Safari\//.test(ua) && /AppleWebKit/.test(ua)) return true;
+  return false;
+}
 
 function setStatus(msg, type = "info") {
   status.textContent = msg;

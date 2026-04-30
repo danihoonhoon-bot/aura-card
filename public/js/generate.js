@@ -195,15 +195,20 @@ saveBtn.addEventListener("click", async () => {
     };
     const id = await saveCard(card);
 
-    // #data= 해시에 직렬화 — 다른 기기에서도 음악·3D 재생 가능
-    // IndexedDB(AR)는 이 기기에서만, 해시 데이터는 어디서나 동작
+    // ?data= 쿼리스트링으로 직렬화 — 인앱 브라우저는 #해시를 제거하므로 쿼리만 사용
+    // 필요한 최소 필드만 인코딩해 URL 길이 절약
     const sharePayload = encodeURIComponent(JSON.stringify({
       name: lastGenerated.name,
-      features: lastGenerated.features,
+      features: {
+        seed:    lastGenerated.features.seed,
+        hash:    lastGenerated.features.hash,
+        palette: lastGenerated.features.palette,
+      },
       params: lastGenerated.params,
     }));
     const base = `${location.origin}${location.pathname.replace(/generate\.html$/, "play.html")}`;
-    const url = `${base}?id=${id}#data=${sharePayload}`;
+    // ?id=X — 이 기기 IndexedDB(AR 포함) / &data=Y — 어디서나 음악·3D
+    const url = `${base}?id=${id}&data=${sharePayload}`;
     shareUrlDisplay.value = url;
     shareLink.href = url;
     shareLink.classList.remove("hidden");

@@ -7,7 +7,7 @@
  * HTML 네비게이션은 항상 네트워크로 직접 보낸다.
  */
 
-const CACHE = "aura-v0.2.0";
+const CACHE = "aura-v0.2.1";
 // HTML 파일은 캐시 대상에서 제외 — navigate 요청은 SW를 통하지 않으므로 의미 없음
 const ASSETS = [
   "./manifest.json",

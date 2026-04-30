@@ -8,6 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#08061a" />
   <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./icons/icon-192.png" type="image/png" />
   <link rel="apple-touch-icon" href="./icons/icon-192.png" />
   <link rel="stylesheet" href="./css/style.css" />
   <title>Aura · 재생</title>
@@ -48,6 +49,30 @@
   </style>
 </head>
 <body>
+
+  <!-- 인앱 브라우저 경고 오버레이 (play.js 에서 isInAppBrowser() 시 display:flex) -->
+  <div id="inapp-overlay" style="
+    display:none; position:fixed; inset:0; z-index:200;
+    background:rgba(8,6,26,0.97); color:#f5f0ff;
+    flex-direction:column; align-items:center; justify-content:center;
+    padding:32px; text-align:center; gap:16px;">
+    <div style="font-size:48px">📱</div>
+    <h2 style="margin:0; font-size:22px;">Safari에서 열어주세요</h2>
+    <p style="color:#a098c8; line-height:1.8; margin:0; font-size:15px;">
+      카카오톡·네이버 등 인앱 브라우저에서는<br>
+      카메라와 음악 권한이 제한됩니다.<br><br>
+      <b>iOS</b> — 우측 하단 <b>···</b> → <b>Safari로 열기</b><br>
+      <b>Android</b> — 우측 상단 <b>⋮</b> → <b>다른 앱으로 열기</b>
+    </p>
+    <button
+      onclick="document.getElementById('inapp-overlay').style.display='none'"
+      style="margin-top:8px; padding:13px 28px; border-radius:999px; border:0;
+        background:linear-gradient(135deg,#7c4dff,#3b82f6); color:#fff;
+        font-size:15px; font-weight:600; cursor:pointer;">
+      그냥 계속하기
+    </button>
+  </div>
+
   <header class="app-header">
     <div class="brand">AURA</div>
     <nav class="app-nav">
