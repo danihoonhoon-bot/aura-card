@@ -206,11 +206,8 @@ saveBtn.addEventListener("click", async () => {
       },
       params: lastGenerated.params,
     }));
-    // pathname 이 /generate 이든 /generate.html 이든 둘 다 처리
-    // [^/]+ 로 파일명만 제거 → 디렉터리 + play(.html) 조합
-    const hasExt = location.pathname.endsWith(".html");
-    const dir    = location.pathname.replace(/[^/]+$/, ""); // 마지막 세그먼트 제거
-    const base   = location.origin + dir + (hasExt ? "play.html" : "play");
+    // 절대 경로 하드코딩 — pathname 조작은 Cloudflare clean URL 에서 오작동
+    const base = location.origin + "/play.html";
     // ?id=X — 이 기기 IndexedDB(AR 포함) / &data=Y — 어디서나 음악·3D
     const url = `${base}?id=${id}&data=${sharePayload}`;
     shareUrlDisplay.value = url;
