@@ -1,0 +1,210 @@
+/* Aura Card 공통 스타일 — 다크 코스믹 톤 */
+
+:root {
+  color-scheme: dark;
+  --bg: #08061a;
+  --bg-elev: #11102a;
+  --fg: #f5f0ff;
+  --fg-dim: #a098c8;
+  --accent: #7c4dff;
+  --accent-2: #3b82f6;
+  --warn: #ff5d6c;
+  --ok: #5cdb95;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0;
+  background: radial-gradient(ellipse at 30% 0%, #2a1b5c 0%, var(--bg) 60%);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+}
+
+header.app-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  position: sticky; top: 0; z-index: 5;
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  background: rgba(8, 6, 26, 0.7);
+}
+.brand {
+  font-size: 18px; font-weight: 700; letter-spacing: 0.04em;
+  background: linear-gradient(135deg, #c4b5fd, #93c5fd);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+nav.app-nav { display: flex; gap: 18px; font-size: 14px; }
+nav.app-nav a { color: var(--fg-dim); }
+nav.app-nav a.active { color: var(--fg); }
+
+h1 {
+  font-size: 32px; font-weight: 700;
+  margin: 24px 0 8px;
+  letter-spacing: -0.01em;
+}
+h2 { font-size: 22px; margin: 32px 0 12px; }
+p.lead { color: var(--fg-dim); line-height: 1.6; margin: 0 0 24px; }
+
+button, .btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 13px 22px;
+  border-radius: 999px; border: 0;
+  font-size: 15px; font-weight: 600; letter-spacing: 0.02em;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 8px 24px rgba(124, 77, 255, 0.25);
+}
+button:active, .btn:active { transform: scale(0.97); }
+button:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+button.ghost, .btn.ghost {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.18);
+  color: var(--fg);
+  box-shadow: none;
+}
+button.warn { background: linear-gradient(135deg, #ff5d6c, #ff9aa8); }
+
+.card-surface {
+  background: var(--bg-elev);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+
+#drop-zone {
+  border: 2px dashed rgba(255,255,255,0.2);
+  border-radius: var(--radius);
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+#drop-zone.dragging { background: rgba(124,77,255,0.1); border-color: var(--accent); }
+#drop-zone .thumb { max-width: 100%; max-height: 280px; border-radius: 12px; }
+#drop-zone .thumb-label { margin-top: 12px; color: var(--fg-dim); font-size: 13px; }
+#drop-zone .icon { font-size: 40px; margin-bottom: 10px; opacity: 0.7; }
+#drop-zone .hint { color: var(--fg-dim); font-size: 14px; }
+
+input[type="text"], input[type="url"] {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--fg);
+  font-size: 15px;
+}
+input[type="text"]:focus, input[type="url"]:focus {
+  outline: none; border-color: var(--accent);
+}
+
+label.field {
+  display: block; margin: 16px 0 8px;
+  color: var(--fg-dim); font-size: 13px;
+}
+
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
+
+.status {
+  margin-top: 16px; padding: 10px 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  font-size: 13px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.status.error { background: rgba(255,93,108,0.12); border-color: rgba(255,93,108,0.4); color: #ffd3d8; }
+.status.ok { background: rgba(92,219,149,0.12); border-color: rgba(92,219,149,0.4); }
+
+.hidden { display: none !important; }
+
+#preview-section {
+  margin-top: 32px;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  margin-top: 16px;
+}
+@media (min-width: 600px) {
+  .preview-grid { grid-template-columns: 1fr 1fr; }
+}
+#card-img {
+  width: 100%; aspect-ratio: 1/1; object-fit: contain;
+  background: #000; border-radius: 12px;
+}
+#visual-canvas {
+  width: 100%; aspect-ratio: 1/1;
+  background: radial-gradient(ellipse, #0e0a1f 0%, #05030f 100%);
+  border-radius: 12px;
+  display: block;
+}
+
+#params-display {
+  margin-top: 14px; font-size: 14px; line-height: 1.7;
+  color: var(--fg-dim);
+}
+#params-display code { color: var(--accent); font-size: 12px; }
+
+/* play.html 전용 */
+.play-stage {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 720px) {
+  .play-stage { grid-template-columns: 1fr 1fr; align-items: center; }
+}
+
+.share-block {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px;
+}
+.share-block input { flex: 1; min-width: 0; }
+
+footer.app-footer {
+  text-align: center; padding: 32px 0; color: var(--fg-dim); font-size: 13px;
+}
+
+/* Landing 전용 */
+.hero {
+  text-align: center;
+  padding: 60px 16px 30px;
+}
+.hero h1 {
+  font-size: 44px;
+  background: linear-gradient(135deg, #c4b5fd, #93c5fd, #f0abfc);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero p { font-size: 17px; max-width: 540px; margin: 12px auto 28px; color: var(--fg-dim); line-height: 1.65; }
+
+.feature-grid {
+  display: grid; grid-template-columns: 1fr; gap: 16px; margin: 32px 0;
+}
+@media (min-width: 640px) {
+  .feature-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+.feature {
+  padding: 22px;
+  background: var(--bg-elev);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius);
+}
+.feature h3 { margin: 8px 0; }
+.feature p { color: var(--fg-dim); font-size: 14px; line-height: 1.6; margin: 0; }
+.feature .emoji { font-size: 32px; }

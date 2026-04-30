@@ -1,0 +1,16 @@
+{
+  "name": "Aura · 음악·시각 명함",
+  "short_name": "Aura",
+  "description": "사진 한 장에서 당신만의 음악과 3D 형상을 만드는 PWA.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#08061a",
+  "theme_color": "#08061a",
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["music", "lifestyle", "art"]
+}

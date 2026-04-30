@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+._*
+
+# Node (로컬 dev 서버용)
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Local env
+.env
+.env.local
+
+# Logs
+*.log
+
+# Build artifacts (현재 빌드 없음)
+dist/
+build/

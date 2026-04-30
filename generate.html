@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#08061a" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <title>Aura · 만들기</title>
+
+  <!-- Three.js bare-specifier 해결용 import map. mind-ar 내부 코드와 같은 인스턴스 공유 -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://esm.sh/three@0.160.0",
+      "three/addons/": "https://esm.sh/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">AURA</div>
+    <nav class="app-nav">
+      <a href="./index.html">소개</a>
+      <a href="./generate.html" class="active">만들기</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1>아우라 만들기</h1>
+    <p class="lead">사진 한 장과 이름이면 됩니다. 모든 처리는 이 기기 안에서 일어나요.</p>
+
+    <section class="card-surface">
+      <label class="field">① 사진</label>
+      <div id="drop-zone">
+        <div class="icon">📷</div>
+        <div><b>사진을 드롭하거나 탭하세요</b></div>
+        <div class="hint">JPG · PNG · HEIC (Safari) · 가로세로 무관</div>
+        <input type="file" id="file-input" accept="image/*" hidden />
+      </div>
+
+      <label class="field" for="name-input">② 이름 (선택)</label>
+      <input id="name-input" type="text" placeholder="예: 지훈" maxlength="32" />
+
+      <div class="row">
+        <button id="generate-btn" disabled>✨ 아우라 생성</button>
+      </div>
+      <div class="status" id="status">사진을 올려주세요.</div>
+    </section>
+
+    <section id="preview-section" class="card-surface hidden" style="margin-top: 24px;">
+      <h2>당신의 아우라</h2>
+      <div class="preview-grid">
+        <div>
+          <img id="card-img" alt="아우라 카드" />
+        </div>
+        <div>
+          <canvas id="visual-canvas" width="600" height="600"></canvas>
+        </div>
+      </div>
+
+      <div id="params-display"></div>
+
+      <div class="row">
+        <button id="play-music-btn">🎵 음악 듣기</button>
+        <button id="stop-music-btn" class="hidden warn">⏹ 정지</button>
+        <button id="download-btn" class="ghost">⬇ 카드 PNG 저장</button>
+      </div>
+
+      <label style="display:flex; align-items:center; gap:8px; margin-top:18px; color:var(--fg-dim); font-size:14px;">
+        <input type="checkbox" id="enable-ar" checked />
+        AR 활성화 (카드를 카메라로 비추면 3D 재생) · 컴파일 5~30초 추가
+      </label>
+
+      <div class="row">
+        <button id="save-btn">💾 저장 + 공유 링크 만들기</button>
+      </div>
+
+      <div id="share-block" class="hidden" style="margin-top:16px;">
+        <label class="field">공유 링크 (받는 사람이 열면 재생)</label>
+        <div class="share-block">
+          <input id="share-url-display" type="url" readonly />
+          <button id="copy-url-btn" class="ghost">복사</button>
+          <a id="share-link" class="btn ghost hidden" target="_blank">열기</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">Aura v0.1</footer>
+
+  <script type="module" src="./js/generate.js"></script>
+  <script>
+    if ("serviceWorker" in navigator && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(console.warn);
+      });
+    } else if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+    }
+  </script>
+</body>
+</html>

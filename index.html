@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#08061a" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <title>Aura · 당신만의 음악·시각 명함</title>
+  <meta name="description" content="사진 한 장이 당신만의 음악·3D·디지털 명함이 됩니다." />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">AURA</div>
+    <nav class="app-nav">
+      <a href="./index.html" class="active">소개</a>
+      <a href="./generate.html">만들기</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>당신의 사진이<br>음악과 3D가 됩니다</h1>
+    <p>
+      얼굴, 지문, 공간 — 모두 다르듯이.<br>
+      Aura는 사진 한 장에서 당신만의 색·결·울림을 추출해<br>
+      세상에 단 하나뿐인 음악과 3D 형상을 만들어줍니다.
+    </p>
+    <a class="btn" href="./generate.html">아우라 만들기 시작</a>
+  </section>
+
+  <main class="container">
+
+    <section class="feature-grid">
+      <div class="feature">
+        <div class="emoji">📷</div>
+        <h3>사진 분석</h3>
+        <p>색감, 엣지, 엔트로피, 해시 — 당신 사진의 고유 지문을 뽑아냅니다.</p>
+      </div>
+      <div class="feature">
+        <div class="emoji">🎵</div>
+        <h3>생성 음악</h3>
+        <p>Tone.js로 키·스케일·템포·악기·리듬이 모두 사진에서 도출됩니다.</p>
+      </div>
+      <div class="feature">
+        <div class="emoji">🌀</div>
+        <h3>3D 시각화</h3>
+        <p>Three.js로 절차적 형상과 파티클이 당신의 색으로 떠다닙니다.</p>
+      </div>
+    </section>
+
+    <section class="card-surface" style="margin-top:32px">
+      <h2>어떻게 명함처럼 쓰나요?</h2>
+      <p style="color: var(--fg-dim); line-height: 1.7;">
+        ① 사진을 올리고 이름을 적어 아우라 카드를 만듭니다.<br>
+        ② 카드 이미지를 인쇄하거나 스마트폰 화면으로 보여줍니다.<br>
+        ③ 받는 사람이 공유 링크를 열면 당신의 음악과 3D가 재생됩니다.<br>
+        ④ 인쇄 카드 위에 카메라를 비추면 AR로도 재생됩니다 <span style="color:var(--fg-dim); font-size:12px;">(v0.2 예정)</span>.
+      </p>
+      <div class="row">
+        <a class="btn" href="./generate.html">지금 만들어보기</a>
+      </div>
+    </section>
+
+    <section class="card-surface" style="margin-top: 24px">
+      <h2>기술 스택</h2>
+      <p style="color:var(--fg-dim); line-height:1.7;">
+        모두 <b>브라우저에서 직접</b> 실행됩니다. 서버에 사진을 업로드하지 않아요.<br>
+        <code>Tone.js</code> · <code>Three.js</code> · <code>Canvas</code> · <code>IndexedDB</code> · <code>Web Crypto</code> · <code>PWA</code>
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    Aura v0.1 · 모든 처리는 클라이언트에서 · MIT 라이선스
+  </footer>
+
+  <script>
+    // PWA Service Worker 등록
+    // 로컬 개발(localhost)에서는 SW 끔 — 캐시 디버깅 혼란 방지
+    if ("serviceWorker" in navigator && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(console.warn);
+      });
+    } else if ("serviceWorker" in navigator) {
+      // localhost 진입 시 기존에 등록된 SW 가 있으면 해제 (옛 캐시 정리)
+      navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+    }
+  </script>
+</body>
+</html>
